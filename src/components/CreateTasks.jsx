@@ -19,7 +19,6 @@ const CreateTasks = ({ tasks = [], setTasks }) => {
       return;
     }
 
-    // Ensure prev is always an array
     setTasks((prev) => {
       const list = [...(prev || []), task];
       localStorage.setItem("tasks", JSON.stringify(list));
@@ -31,7 +30,7 @@ const CreateTasks = ({ tasks = [], setTasks }) => {
     setTask({
       id: "",
       name: "",
-      status: "todo", // reset to default status after task creation
+      status: "todo",
     });
   };
 
@@ -41,7 +40,7 @@ const CreateTasks = ({ tasks = [], setTasks }) => {
         <input
           type="text"
           className="border-2 border-slate-400 rounded-md mr-4 h-12 w-64 px-1"
-          value={task.name} // use task.name instead of task.value
+          value={task.name}
           onChange={(e) =>
             setTask({ ...task, id: uuidv4(), name: e.target.value })
           }
