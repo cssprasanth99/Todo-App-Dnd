@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { useDrag, useDrop } from "react-dnd";
 
-const ListTasks = ({ tasks, setTasks }) => {
+const ListTasks = ({ tasks = [], setTasks }) => {
   const [todos, setTodos] = useState([]);
   const [inProgress, setInProgress] = useState([]);
   const [completed, setCompleted] = useState([]);
@@ -13,9 +13,9 @@ const ListTasks = ({ tasks, setTasks }) => {
       const fInProgress = tasks.filter((task) => task.status === "inprogress");
       const fCompleted = tasks.filter((task) => task.status === "completed");
 
-      setTodos(fTodos);
-      setInProgress(fInProgress);
-      setCompleted(fCompleted);
+      setTodos(fTodos || []);
+      setInProgress(fInProgress || []);
+      setCompleted(fCompleted || []);
     }
   }, [tasks]);
 
@@ -40,7 +40,14 @@ const ListTasks = ({ tasks, setTasks }) => {
 
 export default ListTasks;
 
-const Section = ({ status, tasks, setTasks, todos, inProgress, completed }) => {
+const Section = ({
+  status,
+  tasks = [],
+  setTasks,
+  todos = [],
+  inProgress = [],
+  completed = [],
+}) => {
   let text = "Todo";
   let bg = "bg-slate-500";
   let taskToMap = todos;
@@ -106,7 +113,7 @@ const Header = ({ text, bg, count }) => {
   );
 };
 
-const List = ({ tasks, task, setTasks }) => {
+const List = ({ tasks = [], task, setTasks }) => {
   const [{ isDragging }, drag] = useDrag(() => ({
     type: "task",
     item: { id: task.id },
@@ -116,8 +123,6 @@ const List = ({ tasks, task, setTasks }) => {
   }));
 
   const handleRemove = (id) => {
-    console.log(id);
-
     const fTasks = tasks.filter((t) => t.id !== id);
     localStorage.setItem("tasks", JSON.stringify(fTasks));
     setTasks(fTasks);
@@ -148,7 +153,7 @@ const List = ({ tasks, task, setTasks }) => {
           <path
             strokeLinecap="round"
             strokeLinejoin="round"
-            d="M15 12H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
+            d="M15 12H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1-18 0Z"
           />
         </svg>
       </button>
