@@ -7,7 +7,7 @@ const CreateTasks = ({ tasks = [], setTasks, editingTask, setEditingTask }) => {
     id: "",
     name: "",
     status: "todo",
-    time: new Date().toLocaleString(), // Capture the creation time
+    time: new Date().toLocaleString(),
   });
 
   useEffect(() => {
@@ -43,11 +43,12 @@ const CreateTasks = ({ tasks = [], setTasks, editingTask, setEditingTask }) => {
       toast.success("Task created");
     }
 
-    setTask({
-      id: "",
-      name: "",
-      status: "todo",
-    });
+    // setTask({
+    //   id: "",
+    //   name: "",
+    //   status: "todo",
+    //   time: "",
+    // });
   };
 
   return (
