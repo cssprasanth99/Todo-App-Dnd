@@ -7,6 +7,7 @@ import { HTML5Backend } from "react-dnd-html5-backend";
 
 function App() {
   const [tasks, setTasks] = useState([]);
+  const [editingTask, setEditingTask] = useState(null);
 
   console.log("tasks", tasks);
 
@@ -18,8 +19,18 @@ function App() {
     <DndProvider backend={HTML5Backend}>
       <Toaster />
       <div className="bg-slate-100 w-screen h-screen flex flex-col items-center pt-32 gap-16">
-        <CreateTasks tasks={tasks} setTasks={setTasks} />
-        <ListTasks tasks={tasks} setTasks={setTasks} />
+        <CreateTasks
+          tasks={tasks}
+          setTasks={setTasks}
+          editingTask={editingTask}
+          setEditingTask={setEditingTask}
+        />
+        <ListTasks
+          tasks={tasks}
+          setTasks={setTasks}
+          setEditingTask={setEditingTask}
+          editingTask={editingTask}
+        />
       </div>
     </DndProvider>
   );

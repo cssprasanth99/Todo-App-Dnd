@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { useDrag, useDrop } from "react-dnd";
 
-const ListTasks = ({ tasks = [], setTasks }) => {
+const ListTasks = ({ tasks = [], setTasks, setEditingTask }) => {
   const [todos, setTodos] = useState([]);
   const [inProgress, setInProgress] = useState([]);
   const [completed, setCompleted] = useState([]);
@@ -22,7 +22,7 @@ const ListTasks = ({ tasks = [], setTasks }) => {
   const statuses = ["todo", "inprogress", "completed"];
 
   return (
-    <div className="flex gap-16">
+    <div className="flex flex-col gap-16 md:flex-row">
       {statuses.map((status, index) => (
         <Section
           key={index}
@@ -32,6 +32,7 @@ const ListTasks = ({ tasks = [], setTasks }) => {
           todos={todos}
           inProgress={inProgress}
           completed={completed}
+          setEditingTask={setEditingTask}
         />
       ))}
     </div>
@@ -47,6 +48,7 @@ const Section = ({
   todos = [],
   inProgress = [],
   completed = [],
+  setEditingTask,
 }) => {
   let text = "Todo";
   let bg = "bg-slate-500";
@@ -76,7 +78,11 @@ const Section = ({
     setTasks((prev) => {
       const mTasks = prev.map((t) => {
         if (t.id === id) {
-          return { ...t, status: status };
+          return {
+            ...t,
+            status: status,
+            time: new Date().toLocaleString(), // Update timestamp when task is moved
+          };
         }
         return t;
       });
@@ -94,7 +100,13 @@ const Section = ({
       <Header text={text} bg={bg} count={taskToMap.length} />
       {taskToMap.length > 0 &&
         taskToMap.map((task) => (
-          <List key={task.id} tasks={tasks} task={task} setTasks={setTasks} />
+          <List
+            key={task.id}
+            tasks={tasks}
+            task={task}
+            setTasks={setTasks}
+            setEditingTask={setEditingTask}
+          />
         ))}
     </div>
   );
@@ -113,7 +125,7 @@ const Header = ({ text, bg, count }) => {
   );
 };
 
-const List = ({ tasks = [], task, setTasks }) => {
+const List = ({ tasks = [], task, setTasks, setEditingTask }) => {
   const [{ isDragging }, drag] = useDrag(() => ({
     type: "task",
     item: { id: task.id },
@@ -126,8 +138,12 @@ const List = ({ tasks = [], task, setTasks }) => {
     const fTasks = tasks.filter((t) => t.id !== id);
     localStorage.setItem("tasks", JSON.stringify(fTasks));
     setTasks(fTasks);
-
     toast("Task removed", { icon: "💀" });
+  };
+
+  const handleEdit = (id) => {
+    const editTodo = tasks.find((i) => i.id === id);
+    setEditingTask(editTodo);
   };
 
   return (
@@ -138,6 +154,13 @@ const List = ({ tasks = [], task, setTasks }) => {
       }`}
     >
       <p>{task.name}</p>
+      <p>Last updated: {task.time}</p> {/* Display the timestamp */}
+      <button
+        className="absolute bottom-1 right-10 text-slate-400"
+        onClick={() => handleEdit(task.id)}
+      >
+        Edit
+      </button>
       <button
         className="absolute bottom-1 right-1 text-slate-400"
         onClick={() => handleRemove(task.id)}
@@ -146,13 +169,13 @@ const List = ({ tasks = [], task, setTasks }) => {
           xmlns="http://www.w3.org/2000/svg"
           fill="none"
           viewBox="0 0 24 24"
-          stroke-width="1.5"
+          strokeWidth="1.5"
           stroke="currentColor"
-          class="size-6"
+          className="size-6"
         >
           <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
+            strokeLinecap="round"
+            strokeLinejoin="round"
             d="M15 12H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
           />
         </svg>
